@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Generator</title>
+    <style>
+        #output {
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        #editButton {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #editButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>CV Generator</h1>
+    <form id="cvForm">
+        <input type="text" id="name" placeholder="Name" required><br>
+        <input type="email" id="email" placeholder="Email" required><br>
+        <input type="text" id="phone" placeholder="Phone" required><br>
+        <textarea id="experience" placeholder="Experience" required></textarea><br>
+        <textarea id="education" placeholder="Education" required></textarea><br>
+        <input type="text" id="skillInput" placeholder="Add Skill">
+        <button type="button" id="addSkillBtn">Add Skill</button>
+        <ul id="skillsList"></ul>
+        <button type="button" id="generateCV">Generate CV</button>
+    </form>
+
+    <div id="output"></div>
+    <button id="editButton" style="display:none;">Edit CV</button>
+
+    <script>
+        const form = document.getElementById("cvForm");
+        const generateCVBtn = document.getElementById("generateCV");
+        const addSkillBtn = document.getElementById("addSkillBtn");
+        const skillInput = document.getElementById("skillInput");
+        const skillsList = document.getElementById("skillsList");
+        const outputDiv = document.getElementById("output");
+        const editButton = document.getElementById("editButton");
+
+        let skills = [];
+
+        // Add skill functionality
+        addSkillBtn.addEventListener("click", () => {
+            const skill = skillInput.value.trim();
+            if (skill) {
+                skills.push(skill);
+
+                // Add skill to list
+                const skillItem = document.createElement("li");
+                skillItem.textContent = skill;
+                skillsList.appendChild(skillItem);
+
+                skillInput.value = ""; // Clear input
+            } else {
+                alert("Please enter a skill.");
+            }
+        });
+
+        // Generate CV
+        generateCVBtn.addEventListener("click", () => {
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
+            const experience = document.getElementById("experience").value.trim();
+            const education = document.getElementById("education").value.trim();
+
+            if (!name || !email || !phone || !experience || !education) {
+                alert("Please fill out all fields.");
+                return;
+            }
+
+            const skillsHTML = skills.length
+                ? <h4>Skills:</h4><ul>${skills.map(skill => `<li>${skill}</li>).join("")}</ul>`
+        : "";
+
+      outputDiv.innerHTML = `
+        <h3>${name}</h3>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Phone:</strong> ${phone}</p>
+        <h4>Experience:</h4>
+        <p>${experience}</p>
+        <h4>Education:</h4>
+        <p>${education}</p>
+        ${skillsHTML}
+      `;
+
+      // Show the Edit button
+      editButton.style.display = "inline-block";
+    });
+
+    // Edit CV functionality
+    editButton.addEventListener("click", () => {
+      const isEditable = outputDiv.getAttribute("contenteditable") === "true";
+      outputDiv.setAttribute("contenteditable", !isEditable);
+      editButton.textContent = isEditable ? "Edit CV" : "Save CV";
+
+      if (isEditable) {
+        alert("Your changes have been saved!");
+      }
+    });
+    </script>
+</body>
+
+</html>
